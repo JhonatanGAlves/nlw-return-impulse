@@ -1,68 +1,86 @@
-import { useState } from "react"
-import { CloseButton } from "../CloseButton"
+import { useState } from 'react'
+import { CloseButton } from '../CloseButton'
 import bugImageUrl from '../../assets/bug.svg'
 import ideaImageUrl from '../../assets/idea.svg'
 import thoughtImageUrl from '../../assets/thought.svg'
-import { FeedbackTypeStep } from "./Steps/FeedbackTypeStep"
-import { FeedbackContentStep } from "./Steps/FeedbackContentStep"
+import { FeedbackTypeStep } from './Steps/FeedbackTypeStep'
+import { FeedbackContentStep } from './Steps/FeedbackContentStep'
+import { FeedbackSuccessStep } from './Steps/FeedbackSuccessStep'
 
 export const feedbackTypes = {
   BUG: {
-    title: "Problema",
+    title: 'Problema',
     image: {
       source: bugImageUrl,
-      alt: "Imagem de um inseto"
-    },
+      alt: 'Imagem de um inseto'
+    }
   },
   IDEA: {
-    title: "Ideia",
+    title: 'Ideia',
     image: {
       source: ideaImageUrl,
-      alt: "Imagem de uma lâmpada"
-    },
+      alt: 'Imagem de uma lâmpada'
+    }
   },
   OTHER: {
-    title: "Outro",
+    title: 'Outro',
     image: {
       source: thoughtImageUrl,
-      alt: "Imagem de um balão"
+      alt: 'Imagem de um balão'
     }
   }
 }
 
 // Object.entries(feedbackTypes) =>
 /*
-  * [
-  *   ['BUG', {...}],
-  *   ['IDEA', {...}],
-  *   ['OTHER', {...}]
-  * ]
-*/
+ * [
+ *   ['BUG', {...}],
+ *   ['IDEA', {...}],
+ *   ['OTHER', {...}]
+ * ]
+ */
 
 // Ta dizendo que o tipo do FeedbackTypes é somente as chaves de feedbackTypes ('BUG', 'IDEA' e 'OTHER')
 export type FeedbackTypes = keyof typeof feedbackTypes
 
 export const WidgetForm = () => {
   const [feedbackType, setFeedbackType] = useState<FeedbackTypes | null>(null)
+  const [feedbackSent, setFeedbackSent] = useState(false)
+
+  const handleRestartFeedback = () => {
+    setFeedbackSent(false)
+    setFeedbackType(null)
+  }
 
   return (
     <div className="flex flex-col items-center relative p-4 mb-4 rounded-2xl shadow-lg bg-zinc-900 w-[calc(100vw-2rem)] md:w-auto">
-      <header className="flex justify-between">
-        <span className="text-xl leading-6">Deixe seu feedback</span>
-        <CloseButton />
-      </header>
-
-      {!feedbackType ? (
-        <FeedbackTypeStep onFeedbackTypesChange={setFeedbackType} />
+      {feedbackSent ? (
+        <FeedbackSuccessStep
+          onSendAnotherFeedback={handleRestartFeedback}
+        />
       ) : (
-        // <FeedbackContentStep />
-        <p>Hello World</p>
-      )
-      }
+        <>
+          {!feedbackType ? (
+            <FeedbackTypeStep onFeedbackTypesChange={setFeedbackType} />
+          ) : (
+            <FeedbackContentStep
+              feedbackType={feedbackType}
+              onFeedbackRestartRequested={handleRestartFeedback}
+              onFeedbackSent={() => setFeedbackSent(true)}
+            />
+          )}
+        </>
+      )}
 
       <footer className="text-xs text-neutral-400">
-        Feito por <a className="underline underline-offset-2" href="https://github.com/JhonatanGAlves">Jhonatan Alves</a>
+        Feito por{' '}
+        <a
+          className="underline underline-offset-2"
+          href="https://github.com/JhonatanGAlves"
+        >
+          Jhonatan Alves
+        </a>
       </footer>
-    </div >
+    </div>
   )
 }
