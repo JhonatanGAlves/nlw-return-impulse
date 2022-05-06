@@ -20,6 +20,6 @@ app.use(express.json())
 app.use(routes)
 
 // Minha função express está ouvindo a porta 3333.
-app.listen(3333, () => {
+app.listen(process.env.PORT || 3333, () => {
   console.log('HTTP server running!')
 })
