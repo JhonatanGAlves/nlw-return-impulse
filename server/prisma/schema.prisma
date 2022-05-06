@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Feedback {
+  // Com o @id estou dizendo que a minha coluna id é a minha primary key.
+  // Já o @default eu estou passando a função uuid() pra ele que é uma maneira de ter um ID único.
+  // Formato de um uuid E628264F-8B29-4755-8BA5-58BA8073070C
+  id String @id @default(uuid())
+
+  type       String
+  comment    String
+  screenshot String?
+
+  @@map("feedbacks")
+}
