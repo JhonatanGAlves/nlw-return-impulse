@@ -12,21 +12,25 @@ routes.post('/feedbacks', async (req, res) => {
   // Estou desestruturando o req.body.
   const { type, comment, screenshot } = req.body
 
-  const prismaFeedbacksRepository = new PrismaFeedbacksRepository()
-  const nodemailerMailService = new NodemailerMailServices()
-  // Inversão é isso, é passar o PrismaFeedbacksRepository como parâmetro para o SubmitFeedbackUseCase e não fazer
-  // com que o SubmitFeedbackUseCase seja dependente de PrismaFeedbacksRepository
-  const submitFeedbackUseCase = new SubmitFeedbackUseCase(
-    prismaFeedbacksRepository,
-    nodemailerMailService
-  )
+  try {
+    const prismaFeedbacksRepository = new PrismaFeedbacksRepository()
+    const nodemailerMailService = new NodemailerMailServices()
+    // Inversão é isso, é passar o PrismaFeedbacksRepository como parâmetro para o SubmitFeedbackUseCase e não fazer
+    // com que o SubmitFeedbackUseCase seja dependente de PrismaFeedbacksRepository
+    const submitFeedbackUseCase = new SubmitFeedbackUseCase(
+      prismaFeedbacksRepository,
+      nodemailerMailService
+    )
 
-  await submitFeedbackUseCase.execute({
-    type,
-    comment,
-    screenshot
-  })
+    await submitFeedbackUseCase.execute({
+      type,
+      comment,
+      screenshot
+    })
 
-  // 201 é o status padrão quando quero sinalizar que alguma coisa foi criada no Backend.
-  return res.status(201).send()
+    // 201 é o status padrão quando quero sinalizar que alguma coisa foi criada no Backend.
+    return res.status(201).send()
+  } catch {
+
+  }
 })
